@@ -19,21 +19,21 @@ from sklearn.svm import SVR
 
 path = "../ArtificialIntelligenceCW/" 
 filename_read = os.path.join(path, "vgsalesencode.csv")
-df = pd.read_csv(filename_read, na_values=['NA', '?'])
+gameSales = pd.read_csv(filename_read, na_values=['NA', '?'])
 
 #output the dataset and find any missing fields
 
-print(df)   
-print(df.isnull().any())
+print(gameSales)   
+print(gameSales.isnull().any())
 
 #defining what goes in what axis
 result = []
-for x in df.columns:
+for x in gameSales.columns:
     if x != 'Global_Sales':
         result.append(x)
    
-X = df[result].values
-y = df['Global_Sales'].values
+X = gameSales[result].values
+y = gameSales['Global_Sales'].values
 
 print(X.shape)
 
@@ -50,9 +50,9 @@ print(linRegModel.coef_)
 y_pred = linRegModel.predict(X_test)
 
 #compare real and predicted data
-df_compare = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
-df_head = df_compare.head(25)
-print(df_head)
+gameSales_compare = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+gameSales_head = gameSales_compare.head(25)
+print(gameSales_head)
 
 #output stats
 print('Mean:', np.mean(y_test))
@@ -86,7 +86,7 @@ chartRegression(y_pred,y_test,sort=True)
 
 chartRegression(y_pred[:100].flatten(),y_test[:100],sort=True)   
 
-df_head.plot(kind='bar',figsize=(10,8))
+gameSales_head.plot(kind='bar',figsize=(10,8))
 plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
 plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 plt.show()
