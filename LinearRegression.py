@@ -22,8 +22,8 @@ filename_read = os.path.join(path, "vgsalesencode.csv")
 df = pd.read_csv(filename_read, na_values=['NA', '?'])
 
 #output the dataset and find any missing fields
-print(df)   
 
+print(df)   
 print(df.isnull().any())
 
 #defining what goes in what axis
@@ -41,13 +41,13 @@ print(X.shape)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=9)
 
 #making a linear model and fitting it
-model = LinearRegression()  
-model.fit(X_train, y_train)
+linRegModel = LinearRegression()  
+linRegModel.fit(X_train, y_train)
 
-print(model.coef_)
+print(linRegModel.coef_)
 
 #predicting global sales with the test data
-y_pred = model.predict(X_test)
+y_pred = linRegModel.predict(X_test)
 
 #compare real and predicted data
 df_compare = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
@@ -72,7 +72,7 @@ plt.scatter(y_test, y_pred, color='black')
 
 plt.show()
 
-def chart_regression(pred, y, sort=True):
+def chartRegression(pred, y, sort=True):
     t = pd.DataFrame({'pred': pred, 'y': y.flatten()})
     if sort:
         t.sort_values(by=['y'], inplace=True)
@@ -82,9 +82,9 @@ def chart_regression(pred, y, sort=True):
     plt.legend()
     plt.show()
     
-chart_regression(y_pred,y_test,sort=True)   
+chartRegression(y_pred,y_test,sort=True)   
 
-chart_regression(y_pred[:100].flatten(),y_test[:100],sort=True)   
+chartRegression(y_pred[:100].flatten(),y_test[:100],sort=True)   
 
 df_head.plot(kind='bar',figsize=(10,8))
 plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
@@ -101,4 +101,4 @@ y_svr_pred = svrGamesales.predict(X_test)
 print('Mean:', np.mean(y_test))
 print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_svr_pred)))
 
-chart_regression(y_svr_pred,y_test,sort=True)  
+chartRegression(y_svr_pred,y_test,sort=True)  
