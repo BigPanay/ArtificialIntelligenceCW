@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-
 @author: Chloe
 """
 
@@ -10,9 +9,10 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-#from sklearn.metrics import classification_report
 
 from time import time
+
+
 
 #read in the database
 df = pd.read_csv("vgsales.csv")
@@ -25,33 +25,36 @@ start = time()
 
 
 #plot scatter graph
-plt.title('Game and its Global Sales per Year')
+plt.title('Game vs Global Sales, per Year')
 salesPlt = df.query("Year < 2020 & Publisher in ['Activision', 'Bethesda Softworks', 'Electronic Arts', 'Microsoft Game Studios', 'Nintendo']").filter(["Year", "Global_Sales", "Publisher"])
 sb.scatterplot(salesPlt.iloc[:, 0], salesPlt.iloc[:, 1]/80, hue = salesPlt.iloc[:, 2])
 
 
 
-#prepare genre data
-prepGenre = df.groupby(["Genre"]).sum().filter(["Global_Sales"]).sort_values(by = ["Global_Sales"], ascending = False).head(50)
-class_to_genre = {prepGenre.index.values[i]:i  for i in range(len(prepGenre.index.values))}
+#prepare publisher data
+prepPub = df.groupby(["Publisher"]).sum().filter(["EU_Sales"]).sort_values(by = ["EU_Sales"], ascending = False).head(50)
+indexPub = {prepPub.index.values[i]:i  for i in range(len(prepPub.index.values))}
 data = df.copy()
-data["Genre"].replace(class_to_genre, inplace = True)
-ls = [i for i in range(len(prepGenre.index.values))]
-data = data.drop(data.query("Genre not in @ls").index)
+data["Publisher"].replace(indexPub, inplace = True)
+D = [i for i in range(len(prepPub.index.values))]
+data = data.drop(data.query("Publisher not in @D").index)
 data = data.reset_index(drop = True)
+
+
 
 #prepare plaform data
 prepPlat = df["Platform"].unique()
-class_to_plat = {prepPlat[i] : i  for i in range(len(prepPlat))}
-data["Platform"].replace(class_to_plat, inplace = True)
+indexPlat = {prepPlat[i] : i  for i in range(len(prepPlat))}
+data["Platform"].replace(indexPlat, inplace = True)
 data.dropna(inplace = True)
 
-#prepare publisher data
-prepPub = df["Publisher"].unique()
-class_to_pub = {prepPub[i] : i  for i in range(len(prepPub))}
-data["Publisher"].replace(class_to_pub, inplace = True)
-data.dropna(inplace = True)
 
+
+#prepare genre data
+prepGenre = df["Genre"].unique()
+indexGenre = {prepGenre[i] : i  for i in range(len(prepGenre))}
+data["Genre"].replace(indexGenre, inplace = True)
+data.dropna(inplace = True)
 
 
 #split data
@@ -67,28 +70,10 @@ print("{} total elements becomes: {} training variables, and {} testing variable
 
 
 #print accuracy score
-knearest = KNeighborsClassifier(len(prepGenre))
+knearest = KNeighborsClassifier(len(prepPub))
 knearest.fit(x_train, y_train.ravel())
 accuracy = knearest.score(x_test, y_test)
 print("accuracy: %.2f" % (accuracy*100), "%")
-
-
-
-#classreport = classification_report(y_test, y_pred)
-#print("Report:", classreport)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
